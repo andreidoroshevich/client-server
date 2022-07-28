@@ -4,7 +4,7 @@ const port = 7542
 const bodyParser = require('body-parser');
 const users = require('./users-router')
 const cors = require('cors')
-const {main} = require('./models/User')
+const {main} = require('./models/user')
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
