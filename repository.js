@@ -1,6 +1,7 @@
-let fs = require("fs");
+const {readJSONFromFile} = require("./fs-utils");
+
 let path = require("path");
-const {readJSONFromFile, writeJSONToFile} = require("./fs-utils");
+const {usersCollection} = require("./models/User");
 
 const filePath = path.join(__dirname, 'users.json')
 
@@ -8,10 +9,8 @@ const getUsers = () => {
     return readJSONFromFile(filePath)
 }
 
-const addUser = async (id, name) => {
-    let users = await getUsers()
-    users.push({id, name})
-    return writeJSONToFile(filePath, users)
+const addUser = async (name) => {
+    await usersCollection.insertOne({name})
 }
 
 exports.getUsers = getUsers
