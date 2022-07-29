@@ -1,4 +1,4 @@
-const {addUser, getUsers} = require("./repository");
+const {addUser, getUsers, deleteUser, getUser, updateUser} = require("./repository");
 const express = require('express');
 const router = express.Router();
 
@@ -8,18 +8,20 @@ router.use(function timeLog(req, res, next) {
     next();
 });
 router.get('/', async (req, res) => {
-    let users = await getUsers()
-    if (!!req.query.search) {
-        users = users.filter(u=>u.name.indexOf(req.query.search)>-1)
-    }
-
+    let users = await getUsers(req.query.search)
     res.send(JSON.stringify(users))
 })
 
+router.delete('/:_id', async (req, res) => {
+    let userId = req.params._id
+    console.log(userId)
+    await deleteUser(userId)
+    res.sendStatus(204)
+})
+
 router.get('/:id', async (req, res) => {
-    let users = await getUsers()
-    let userId = Number(req.params.id)
-    let user = users.find(u => u.id === userId)
+    let userId = req.params.id
+    let user = await getUser(userId)
     if (user) {
         res.send(user)
     } else {
@@ -30,6 +32,13 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
     let name = req.body.name
     await addUser(name)
+    res.send(JSON.stringify({success: true}))
+})
+
+router.put('/', async (req, res) => {
+    let name = req.body.name
+    let userId = req.body._id
+    await updateUser(userId, name)
     res.send(JSON.stringify({success: true}))
 })
 
